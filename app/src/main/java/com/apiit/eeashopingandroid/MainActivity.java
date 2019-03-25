@@ -31,11 +31,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter pAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
-    private Product[] products;
-    String url = "https://my-json-server.typicode.com/sandarusahan/sample_json/products";
+    String url = "http://192.168.1.4:8080/product/";
     RequestQueue requestQueue;
 
     @Override
@@ -150,7 +148,7 @@ public class MainActivity extends AppCompatActivity
 
         JsonArrayRequest objectRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                url,
+                url+"all",
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -167,7 +165,7 @@ public class MainActivity extends AppCompatActivity
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println(error);
+                        System.out.println("Error while fetching products "+error);
                     }
                 }
         );

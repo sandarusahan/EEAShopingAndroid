@@ -12,27 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="1000dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/prodImgDetail"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="350dp"
             android:layout_alignParentBottom="true"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/toolbar_color"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/prodNameDetail"
@@ -55,13 +57,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="76dp"
             android:text="TextView"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/prodImgDetail"
             app:layout_constraintHorizontal_bias="0.066"
             app:layout_constraintStart_toStartOf="@+id/prodImgDetail"
-            tools:layout_editor_absoluteY="476dp" />
+            app:layout_constraintTop_toBottomOf="@+id/prodImgDetail" />
 
         <Button
             android:id="@+id/addToCartBtnDetail"
@@ -76,7 +79,7 @@
             app:layout_constraintStart_toStartOf="@+id/prodPriceDetail"
             app:layout_constraintTop_toBottomOf="@+id/prodPriceDetail" />
 
-        <EditText
+        <TextView
             android:id="@+id/prodDescriptionDetail"
             android:layout_width="357dp"
             android:layout_height="wrap_content"

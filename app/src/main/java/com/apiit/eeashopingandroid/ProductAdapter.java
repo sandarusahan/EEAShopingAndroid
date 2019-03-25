@@ -3,6 +3,7 @@ package com.apiit.eeashopingandroid;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         private TextView prod_name;
+        private TextView prod_id;
         private TextView prod_price;
         private Button btn_add_to_cart;
         private ImageView img_prod_card_img;
@@ -33,19 +35,27 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         public ProductViewHolder(View v) {
             super(v);
             prod_name = (TextView) v.findViewById(R.id.tx_prod_name);
+            prod_id = (TextView) v.findViewById(R.id.tx_prod_id);
             prod_price = (TextView) v.findViewById(R.id.tx_prod_price);
             btn_add_to_cart = (Button) v.findViewById(R.id.btn_add_to_cart);
             img_prod_card_img = (ImageView) v.findViewById(R.id.img_prod_card_img);
-
+            btn_add_to_cart = (Button) v.findViewById(R.id.btn_add_to_cart);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String productKey = product.getpId();
+                    String productKey = prod_id.getText().toString();
                     Intent i = new Intent(v.getContext(), ProductDetails.class);
-                    i.putExtra("product", product);
+                    i.putExtra("product", productKey);
                     v.getContext().startActivity(i);
-                    Toast.makeText(v.getContext(), prod_name.getText(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(v.getContext(), prod_name.getText(), Toast.LENGTH_SHORT).show();
 
+                }
+            });
+            btn_add_to_cart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(v, prod_name.getText(), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
             });
         }
@@ -76,6 +86,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         // - replace the contents of the view with that element
 
         product = products[position];
+        holder.prod_id.setText(product.getpId());
         holder.prod_name.setText(product.getpName());
         holder.prod_price.setText("Rs. " + Double.toString(product.getpPrice()));
         Glide.with(context).load(product.getpImg()).apply(new RequestOptions().override(500,500)).centerCrop().into(holder.img_prod_card_img);
