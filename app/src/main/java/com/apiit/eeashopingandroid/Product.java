@@ -1,6 +1,8 @@
 package com.apiit.eeashopingandroid;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private String pId;
     private String pName;
     private String pCategory;

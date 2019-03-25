@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
     private Product[] products;
-    String url = "https://10.0.2.1/products/";
+    String url = "https://my-json-server.typicode.com/sandarusahan/sample_json/products";
     RequestQueue requestQueue;
 
     @Override
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity
 
         JsonArrayRequest objectRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                url+"all",
+                url,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override

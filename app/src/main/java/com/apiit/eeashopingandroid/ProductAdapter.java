@@ -2,6 +2,7 @@ package com.apiit.eeashopingandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 public void onClick(View v) {
                     String productKey = product.getpId();
                     Intent i = new Intent(v.getContext(), ProductDetails.class);
-                    i.putExtra("product", productKey);
+                    i.putExtra("product", product);
                     v.getContext().startActivity(i);
                     Toast.makeText(v.getContext(), prod_name.getText(), Toast.LENGTH_SHORT).show();
 
