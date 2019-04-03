@@ -1,4 +1,4 @@
-package com.apiit.eeashopingandroid;
+package com.apiit.eeashopingandroid.package_product;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +18,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.apiit.eeashopingandroid.AppSingleton;
+import com.apiit.eeashopingandroid.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -35,7 +36,7 @@ public class ProductDetails extends AppCompatActivity {
     Toolbar toolbar;
     ScrollView scrollView;
     String prodId;
-    String url = "http://192.168.1.4:8080/product/";
+    String url = "http://10.0.3.2:8080/product/";
     RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

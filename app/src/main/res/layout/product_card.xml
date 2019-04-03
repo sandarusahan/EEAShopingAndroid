@@ -13,14 +13,14 @@
         <ImageView
             android:id="@+id/img_prod_card_img"
             android:layout_width="125dp"
-            android:layout_height="150dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
             android:layout_width="186dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -31,7 +31,7 @@
                 android:padding="2dp"
                 android:text="TextView"
                 android:textColor="@android:color/black"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -53,14 +53,38 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
-            <Button
-                android:id="@+id/btn_add_to_cart"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/colorAddToCartBtn"
-                android:text="Add To Cart"
-                android:textColor="@android:color/white" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_decrease_count"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorAddToCartBtn"
+                    android:text="-"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btn_add_to_cart"
+                    android:layout_width="131dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorAddToCartBtn"
+                    android:text="Add To Cart"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btn_increase_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorAddToCartBtn"
+                    android:text="+"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>

@@ -2,7 +2,6 @@ package com.apiit.eeashopingandroid;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,33 +12,57 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.apiit.eeashopingandroid.package_cart.CartItem;
+import com.apiit.eeashopingandroid.package_product.Product;
+import com.apiit.eeashopingandroid.package_product.ProductDetails;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private Product[] products;
     private Context context;
     private Product product;
+    String url = "http://10.0.3.2:8080/cart/";
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        private TextView prod_name;
-        private TextView prod_id;
-        private TextView prod_price;
-        private Button btn_add_to_cart;
-        private ImageView img_prod_card_img;
+        TextView prod_name;
+        TextView prod_id;
+        TextView prod_price;
+        Button btn_add_to_cart;
+        Button btn_increase;
+        Button btn_decrease;
+        ImageView img_prod_card_img;
+
+        int itemCount = 1;
 
         public ProductViewHolder(View v) {
             super(v);
-            prod_name = (TextView) v.findViewById(R.id.tx_prod_name);
-            prod_id = (TextView) v.findViewById(R.id.tx_prod_id);
-            prod_price = (TextView) v.findViewById(R.id.tx_prod_price);
-            btn_add_to_cart = (Button) v.findViewById(R.id.btn_add_to_cart);
-            img_prod_card_img = (ImageView) v.findViewById(R.id.img_prod_card_img);
-            btn_add_to_cart = (Button) v.findViewById(R.id.btn_add_to_cart);
+            prod_name = v.findViewById(R.id.tx_prod_name);
+            prod_id = v.findViewById(R.id.tx_prod_id);
+            prod_price = v.findViewById(R.id.tx_prod_price);
+            btn_add_to_cart = v.findViewById(R.id.btn_add_to_cart);
+            img_prod_card_img = v.findViewById(R.id.img_prod_card_img);
+            btn_add_to_cart = v.findViewById(R.id.btn_add_to_cart);
+            btn_increase = v.findViewById(R.id.btn_increase_count);
+            btn_decrease = v.findViewById(R.id.btn_decrease_count);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -51,11 +74,92 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
                 }
             });
+
+
+            btn_increase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemCount++;
+                    btn_add_to_cart.setText("Add "+Integer.toString(itemCount)+ " to cart");
+
+                }
+            });
+            btn_decrease.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(itemCount>0){
+                        itemCount--;
+                        btn_add_to_cart.setText("Add "+Integer.toString(itemCount)+ " to cart");
+
+                    }
+                }
+            });
+
+
+            btn_add_to_cart.setText("Add "+Integer.toString(itemCount)+ " to cart");
+
             btn_add_to_cart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, prod_name.getText(), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    CartItem cartItem = new CartItem();
+                    cartItem.setName(prod_name.getText().toString());
+                    cartItem.setAmount(itemCount);
+                    cartItem.setPid(prod_id.getText().toString());
+                    cartItem.setPrice(Double.parseDouble((prod_price.getText().toString()).substring(3)));
+                    cartItem.setUid("User 01");
+
+                    Gson gson = new Gson();
+                    String jsonCartItem = gson.toJson(cartItem);
+
+                    JsonObject json = new JsonParser().parse(jsonCartItem).getAsJsonObject();
+
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(json.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            Request.Method.POST,
+                            url + "add",
+                            jsonObject,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    System.out.println(response.toString());
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    System.out.println(error.toString());
+
+                                }
+                            }
+
+                    ){
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> paramMap = new HashMap<>();
+                            paramMap.put("pid", prod_id.getText().toString());
+                            paramMap.put("amount", Integer.toString(itemCount));
+                            paramMap.put("uid", "User 01");
+                            paramMap.put("price", prod_price.getText().toString());
+                            paramMap.put("name", prod_name.getText().toString());
+
+                            return paramMap;
+                        }
+                    };
+                    AppSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+                    Snackbar.make(v, itemCount +" of "+prod_name.getText() + " added to the cart", Snackbar.LENGTH_LONG)
+                            .setAction("Undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Toast.makeText(context, "LOL", Toast.LENGTH_SHORT).show();
+                                }
+                            }).show();
                 }
             });
         }

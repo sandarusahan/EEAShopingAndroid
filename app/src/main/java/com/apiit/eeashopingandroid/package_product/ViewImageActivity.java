@@ -1,4 +1,4 @@
-package com.apiit.eeashopingandroid;
+package com.apiit.eeashopingandroid.package_product;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.apiit.eeashopingandroid.R;
 import com.bumptech.glide.Glide;
 
 

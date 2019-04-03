@@ -1,11 +1,9 @@
 package com.apiit.eeashopingandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -23,6 +21,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.apiit.eeashopingandroid.package_cart.CartActivity;
+import com.apiit.eeashopingandroid.package_product.Product;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
-    String url = "http://192.168.1.4:8080/product/";
+    String url = "http://10.0.3.2:8080/product/";
     RequestQueue requestQueue;
 
     @Override
@@ -48,8 +48,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(view.getContext(), CartActivity.class);
+                view.getContext().startActivity(i);
+// Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
 
@@ -110,7 +112,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.refresh) {
+            getProducts();
             return true;
         }
 
@@ -160,15 +163,19 @@ public class MainActivity extends AppCompatActivity
                         ProductAdapter productAdapter = new ProductAdapter(products, context);
                         recyclerView.setAdapter(productAdapter);
                         productAdapter.notifyDataSetChanged();
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.println("Error while fetching products "+error);
+
                     }
                 }
         );
+
+
 
         AppSingleton.getInstance(context).addToRequestQueue(objectRequest);
 

@@ -1,4 +1,4 @@
-package com.apiit.eeashopingandroid;
+package com.apiit.eeashopingandroid.package_product;
 
 import java.io.Serializable;
 

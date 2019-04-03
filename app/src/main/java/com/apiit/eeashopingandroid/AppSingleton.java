@@ -33,7 +33,7 @@ public class AppSingleton {
         return requestQueue;
     }
 
-    public <Product> void addToRequestQueue(Request<Product> req) {
+    public void addToRequestQueue(Request req) {
         getRequestQueue().add(req);
     }
 
