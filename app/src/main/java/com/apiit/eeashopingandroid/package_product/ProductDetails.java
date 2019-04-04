@@ -37,7 +37,6 @@ public class ProductDetails extends AppCompatActivity {
     ScrollView scrollView;
     String prodId;
     String url = "http://10.0.3.2:8080/product/";
-    RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +85,6 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     public void getProduct(String pid) {
-        requestQueue = AppSingleton.getInstance(getApplicationContext()).getRequestQueue();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,

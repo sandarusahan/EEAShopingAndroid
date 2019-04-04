@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text="TextView"
+                android:textAllCaps="true"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -86,7 +87,7 @@
                         android:layout_height="50dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:background="@android:drawable/ic_menu_close_clear_cancel"
+                        android:background="@drawable/trash"
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="@android:color/white"

@@ -1,7 +1,11 @@
 package com.apiit.eeashopingandroid.package_cart;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -20,11 +24,9 @@ import org.json.JSONArray;
 public class CartActivity extends AppCompatActivity {
 
     private ListView cartItemsList;
-    private Button checkoutBtn;
-    private TextView totalCost;
+    private FloatingActionButton checkoutBtn;
     private TextView emptyText;
 
-    boolean isEmpty = false;
 
     String url = "http://10.0.3.2:8080/cart/";
 
@@ -32,10 +34,13 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_cart);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         cartItemsList = findViewById(R.id.cart_items_list);
         checkoutBtn = findViewById(R.id.btn_checkout);
-        totalCost = findViewById(R.id.total_cost);
         emptyText = findViewById(R.id.empty_text);
 
         cartItemsList.setEmptyView(emptyText);
@@ -45,6 +50,34 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.refresh) {
+            getCartItems();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -69,17 +102,8 @@ public class CartActivity extends AppCompatActivity {
                         CartAdapter cartAdapter = new CartAdapter(CartActivity.this, R.layout.cart_item_card, cartItems);
 //                        ArrayAdapter<CartItem> cartAdapter = new ArrayAdapter<CartItem>(CartActivity.this, R.layout.product_card, cartItems);
                         cartItemsList.setAdapter(cartAdapter);
-                        if (cartAdapter.getCount() == 0)
-                            isEmpty = true;
 
-                        if(isEmpty)
-                        {
-                            checkoutBtn.setVisibility(View.GONE);
-                            totalCost.setVisibility(View.GONE);
-                        }else {
-                            checkoutBtn.setVisibility(View.VISIBLE);
-                            totalCost.setVisibility(View.VISIBLE);
-                        }
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -90,5 +114,7 @@ public class CartActivity extends AppCompatActivity {
                 });
 
         AppSingleton.getInstance(CartActivity.this).addToRequestQueue(jsonArrayRequest);
+
+
     }
 }

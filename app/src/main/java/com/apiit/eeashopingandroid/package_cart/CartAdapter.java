@@ -1,6 +1,7 @@
 package com.apiit.eeashopingandroid.package_cart;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.apiit.eeashopingandroid.AppSingleton;
 import com.apiit.eeashopingandroid.package_product.Product;
@@ -21,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CartAdapter extends ArrayAdapter<CartItem> {
@@ -28,7 +32,8 @@ public class CartAdapter extends ArrayAdapter<CartItem> {
     Context context;
     CartItem[] cartItems;
     int resourceLayout;
-    String url = "http://10.0.3.2:8080/product/";
+    String url = "http://10.0.3.2:8080/";
+
 
     public CartAdapter(Context context, int resource, CartItem[] cartItems) {
         super(context, resource, cartItems);
@@ -115,7 +120,34 @@ public class CartAdapter extends ArrayAdapter<CartItem> {
         cartItemHolder.removeItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.DELETE, url + "cart/"+ cartItem.getCid(), null,
+                        new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+
+                                CartItem[] cartsItems;
+                                Gson gson = new Gson();
+                                cartsItems = gson.fromJson(response.toString(), CartItem[].class);
+                                cartItems = cartsItems;
+                                notifyDataSetChanged();
+
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                System.out.println("Error while fetching cart items" + error);
+                            }
+                        });
+                AppSingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
                 System.out.println(cartItemHolder.itemCountHad+" to checkout");
+                Snackbar.make(v, cartItem.getName() +" has removed from the cart", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(context, "LOL", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
             }
         });
 
@@ -127,7 +159,7 @@ public class CartAdapter extends ArrayAdapter<CartItem> {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
-                url+pid,
+                url+"product/"+pid,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -147,5 +179,7 @@ public class CartAdapter extends ArrayAdapter<CartItem> {
                 });
         AppSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
+
+
 
 }
