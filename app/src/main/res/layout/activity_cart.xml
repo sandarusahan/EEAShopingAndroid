@@ -8,44 +8,49 @@
     tools:context=".package_product.ProductDetails">
 
 
-    <TextView
-        android:id="@+id/empty_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Shop some more to see a long list of items in here"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="384dp" />
-
-
-    <ListView
-        android:id="@+id/cart_items_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_cart"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_cart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_checkout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
         android:clickable="true"
+        android:focusable="auto"
         android:src="@drawable/credit_card"
         app:backgroundTint="@color/colorPrimary"
         app:backgroundTintMode="src_atop"
-        tools:layout_editor_absoluteX="330dp"
-        tools:layout_editor_absoluteY="650dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="384dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cart_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_cart" />
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_cart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

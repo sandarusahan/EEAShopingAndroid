@@ -49,7 +49,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -67,26 +66,24 @@
 
                     <Button
                         android:id="@+id/btn_minus_cart"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@android:drawable/arrow_down_float"
-                        android:text="-"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/negative"
                         android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/btn_plus_cart"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@android:drawable/arrow_up_float"
-                        android:text="+"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/plus"
                         android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/btn_remove_from_cart"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:background="@drawable/trash"
                         android:textAlignment="center"
                         android:textAllCaps="false"

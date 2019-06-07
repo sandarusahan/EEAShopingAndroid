@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.apiit.eeashopingandroid.package_cart.CartActivity;
+import com.apiit.eeashopingandroid.package_category.CategoryListActivity;
 import com.apiit.eeashopingandroid.package_product.Product;
 import com.google.gson.Gson;
 
@@ -33,8 +34,9 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
-    String url = "http://10.0.3.2:8080/product/";
-    RequestQueue requestQueue;
+
+    String keyW = "all";
+    String url = "http://10.0.3.2:8080/product/public/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = getApplicationContext();
+
+        Intent intent = getIntent();
+        int catId = intent.getIntExtra("cat_id", -1);
+
+        if(catId != -1){
+            keyW = "category/"+catId;
+        }else{
+            keyW = "all";
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,8 +67,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -83,7 +93,7 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-            getProducts();
+            getProducts(keyW);
 
     }
 
@@ -113,7 +123,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.refresh) {
-            getProducts();
+            getProducts(keyW);
             return true;
         }
 
@@ -126,18 +136,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_categories) {
+            Intent intent = new Intent(this, CategoryListActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_promo) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_logout) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_user) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -145,13 +154,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void getProducts() {
-
-        requestQueue = AppSingleton.getInstance(this.context).getRequestQueue();
+    public void getProducts(String keyword) {
 
         JsonArrayRequest objectRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                url+"all",
+                url+keyword,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -178,6 +185,9 @@ public class MainActivity extends AppCompatActivity
 
 
         AppSingleton.getInstance(context).addToRequestQueue(objectRequest);
+
+
+
 
     }
 }

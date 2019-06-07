@@ -14,9 +14,11 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.apiit.eeashopingandroid.package_cart.CartItem;
 import com.apiit.eeashopingandroid.package_product.Product;
 import com.apiit.eeashopingandroid.package_product.ProductDetails;
@@ -36,7 +38,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private Product[] products;
     private Context context;
     private Product product;
-    String url = "http://10.0.3.2:8080/cart/";
+    private Product selectedProduct;
+    String url = "http://10.0.3.2:8080/auth/cart/add";
+    String producturl = "http://10.0.3.2:8080/product/";
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -46,6 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         TextView prod_name;
         TextView prod_id;
         TextView prod_price;
+        TextView items_qty;
         Button btn_add_to_cart;
         Button btn_increase;
         Button btn_decrease;
@@ -57,6 +62,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             super(v);
             prod_name = v.findViewById(R.id.tx_prod_name);
             prod_id = v.findViewById(R.id.tx_prod_id);
+            items_qty = v.findViewById(R.id.tx_item_qty);
             prod_price = v.findViewById(R.id.tx_prod_price);
             btn_add_to_cart = v.findViewById(R.id.btn_add_to_cart);
             img_prod_card_img = v.findViewById(R.id.img_prod_card_img);
@@ -75,91 +81,32 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 }
             });
 
-
             btn_increase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     itemCount++;
-                    btn_add_to_cart.setText("Add "+Integer.toString(itemCount)+ " to cart");
+                    items_qty.setText(Integer.toString(itemCount)+ " items");
 
                 }
             });
             btn_decrease.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(itemCount>0){
+                    if(itemCount>1){
                         itemCount--;
-                        btn_add_to_cart.setText("Add "+Integer.toString(itemCount)+ " to cart");
+                        items_qty.setText(Integer.toString(itemCount)+ " items");
 
                     }
                 }
             });
 
-
-            btn_add_to_cart.setText("Add "+Integer.toString(itemCount)+ " to cart");
-
             btn_add_to_cart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CartItem cartItem = new CartItem();
-                    cartItem.setName(prod_name.getText().toString());
-                    cartItem.setAmount(itemCount);
-                    cartItem.setPid(prod_id.getText().toString());
-                    cartItem.setPrice(Double.parseDouble((prod_price.getText().toString()).substring(3)));
-                    cartItem.setUid("User 01");
+                    getProduct(Integer.parseInt(prod_id.getText().toString()));
 
-                    Gson gson = new Gson();
-                    String jsonCartItem = gson.toJson(cartItem);
-
-                    JsonObject json = new JsonParser().parse(jsonCartItem).getAsJsonObject();
-
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(json.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                            Request.Method.POST,
-                            url + "add",
-                            jsonObject,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    System.out.println(response.toString());
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    System.out.println(error.toString());
-
-                                }
-                            }
-
-                    ){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> paramMap = new HashMap<>();
-                            paramMap.put("pid", prod_id.getText().toString());
-                            paramMap.put("amount", Integer.toString(itemCount));
-                            paramMap.put("uid", "User 01");
-                            paramMap.put("price", prod_price.getText().toString());
-                            paramMap.put("name", prod_name.getText().toString());
-
-                            return paramMap;
-                        }
-                    };
-                    AppSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
                     Snackbar.make(v, itemCount +" of "+prod_name.getText() + " added to the cart", Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Toast.makeText(context, "LOL", Toast.LENGTH_SHORT).show();
-                                }
-                            }).show();
+                            .show();
                 }
             });
         }
@@ -202,5 +149,98 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public int getItemCount() {
         return products.length;
+    }
+
+    public void getProduct(int pid) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                producturl+pid,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Gson gson = new Gson();
+                        Product product = gson.fromJson(response.toString(), Product.class);
+
+                        selectedProduct = product;
+
+                        addToCart();
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Error fetching product"+error);
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void addToCart(){
+        CartItem cartitem = new CartItem();
+        cartitem.setProduct(selectedProduct);
+        cartitem.setAmount(1);
+        cartitem.setUid("4028da826a5508be016a550922060000"); // hardcoded to one user.....................................................
+
+        Gson gson = new Gson();
+        String Jsoncart = gson.toJson(cartitem);
+
+        JsonParser parser = new JsonParser();
+        JsonObject json = (JsonObject) parser.parse(Jsoncart);
+
+        JSONObject cartjsonObject = null;
+        try{
+            cartjsonObject = new JSONObject(json.toString());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                cartjsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Error adding product to cart"+error);
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams()  {
+                Map<String, String> cartMap = new HashMap<>();
+                cartMap.put("product", selectedProduct.toString());
+                cartMap.put("userId", "4028da826a5508be016a550922060000");
+                cartMap.put("pprice", Double.toString(selectedProduct.getpPrice()));
+
+                return cartMap;
+            }
+
+
+
+//                        @Override
+//                        public Map<String, String> getHeaders() throws AuthFailureError {
+//                            final Map<String, String> headers = new HashMap<>();
+//                            headers.put("","");
+//                            return headers;
+//                        }
+        };
+
+        AppSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+
     }
 }

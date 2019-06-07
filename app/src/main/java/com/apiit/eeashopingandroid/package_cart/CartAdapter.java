@@ -1,7 +1,9 @@
 package com.apiit.eeashopingandroid.package_cart;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +29,17 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class CartAdapter extends ArrayAdapter<CartItem> {
+import java.util.List;
+
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder> {
 
     Context context;
-    CartItem[] cartItems;
+    List<CartItem> cartItems;
     int resourceLayout;
     String url = "http://10.0.3.2:8080/";
 
 
-    public CartAdapter(Context context, int resource, CartItem[] cartItems) {
-        super(context, resource, cartItems);
+    public CartAdapter(Context context, int resource, List<CartItem> cartItems) {
         this.context = context;
         this.cartItems = cartItems;
         this.resourceLayout = resource;
@@ -44,7 +47,7 @@ public class CartAdapter extends ArrayAdapter<CartItem> {
 
 
 
-    private class CartItemHolder {
+    public class CartItemHolder extends RecyclerView.ViewHolder {
         TextView prodName;
         TextView prodPrice;
         TextView prodAddupPrice;
@@ -54,130 +57,74 @@ public class CartAdapter extends ArrayAdapter<CartItem> {
         Button removeItemBtn;
 
         int itemCountHad;
+        private CartItem cartItem;
+
+        public CartItemHolder(@NonNull View itemView) {
+            super(itemView);
+
+            prodName = itemView.findViewById(R.id.prod_name_cart);
+            prodPrice = itemView.findViewById(R.id.prod_price_cart);
+            prodAddupPrice = itemView.findViewById(R.id.prod_addup_price_cart);
+            prodPic = itemView.findViewById(R.id.prod_img_cart);
+            plusBtn = itemView.findViewById(R.id.btn_plus_cart);
+            minusBtn = itemView.findViewById(R.id.btn_minus_cart);
+            removeItemBtn = itemView.findViewById(R.id.btn_remove_from_cart);
+
+            plusBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    itemCountHad++;
+                    prodName.setText(cartItem.getProduct().getpName() + " " + "(" + itemCountHad + ")");
+                    prodAddupPrice.setText(Double.toString(cartItem.getProduct().getpPrice() * itemCountHad));
+
+                    if(minusBtn.getVisibility() == View.GONE){
+                        minusBtn.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+            minusBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(itemCountHad > 1) {
+                        itemCountHad--;
+                        prodName.setText(cartItem.getProduct().getpName() + " " + "(" + itemCountHad + ")");
+                        prodAddupPrice.setText(Double.toString(cartItem.getProduct().getpPrice() * itemCountHad));
+                    }else {
+                        minusBtn.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+
+        }
     }
 
+
+    @NonNull
+    @Override
+    public CartItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(resourceLayout, viewGroup, false);
+        CartAdapter.CartItemHolder viewHolder = new CartItemHolder(view);
+        return viewHolder;
+    }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(@NonNull CartItemHolder cartItemHolder, int i) {
 
-        final CartItem cartItem = getItem(position);
-
-        final CartItemHolder cartItemHolder;
-
-        final View view;
-
-
-
-        if(convertView == null) {
-
-            cartItemHolder = new CartItemHolder();
-            LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(resourceLayout, parent, false);
-            cartItemHolder.prodName = convertView.findViewById(R.id.prod_name_cart);
-            cartItemHolder.prodPrice = convertView.findViewById(R.id.prod_price_cart);
-            cartItemHolder.prodAddupPrice = convertView.findViewById(R.id.prod_addup_price_cart);
-            cartItemHolder.prodPic = convertView.findViewById(R.id.prod_img_cart);
-            cartItemHolder.plusBtn = convertView.findViewById(R.id.btn_plus_cart);
-            cartItemHolder.minusBtn = convertView.findViewById(R.id.btn_minus_cart);
-            cartItemHolder.removeItemBtn = convertView.findViewById(R.id.btn_remove_from_cart);
-
-            view = convertView;
-
-            convertView.setTag(cartItemHolder);
-        }
-        else {
-            cartItemHolder = (CartItemHolder) convertView.getTag();
-            view = convertView;
-        }
+        CartItem cartItem = cartItems.get(i);
         cartItemHolder.itemCountHad = cartItem.getAmount();
 
-        getProduct(cartItem.getPid(), cartItemHolder);
-        cartItemHolder.prodName.setText(cartItem.getName()+" "+"("+cartItemHolder.itemCountHad+")");
-        cartItemHolder.prodPrice.setText(Double.toString(cartItem.getPrice()));
-        cartItemHolder.prodAddupPrice.setText(Double.toString(cartItem.getPrice() * cartItem.getAmount()));
+        cartItemHolder.prodName.setText(cartItem.getProduct().getpName()+" "+"("+cartItemHolder.itemCountHad+")");
+        cartItemHolder.prodPrice.setText(Double.toString(cartItem.getProduct().getpPrice()));
+        cartItemHolder.prodAddupPrice.setText(Double.toString(cartItem.getProduct().getpPrice() * cartItem.getAmount()));
+        Glide.with(context).load(cartItem.getProduct().getpImg()).apply(new RequestOptions().override(500,500)).centerCrop().into(cartItemHolder.prodPic);
 
-        cartItemHolder.plusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                    cartItemHolder.itemCountHad++;
-                    cartItemHolder.prodName.setText(cartItem.getName() + " " + "(" + cartItemHolder.itemCountHad + ")");
-                    cartItemHolder.prodAddupPrice.setText(Double.toString(cartItem.getPrice() * cartItemHolder.itemCountHad));
-
-            }
-        });
-        cartItemHolder.minusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cartItemHolder.itemCountHad > 0) {
-                    cartItemHolder.itemCountHad--;
-                    cartItemHolder.prodName.setText(cartItem.getName() + " " + "(" + cartItemHolder.itemCountHad + ")");
-                    cartItemHolder.prodAddupPrice.setText(Double.toString(cartItem.getPrice() * cartItemHolder.itemCountHad));
-                }
-            }
-        });
-
-        cartItemHolder.removeItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.DELETE, url + "cart/"+ cartItem.getCid(), null,
-                        new Response.Listener<JSONArray>() {
-                            @Override
-                            public void onResponse(JSONArray response) {
-
-                                CartItem[] cartsItems;
-                                Gson gson = new Gson();
-                                cartsItems = gson.fromJson(response.toString(), CartItem[].class);
-                                cartItems = cartsItems;
-                                notifyDataSetChanged();
-
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                System.out.println("Error while fetching cart items" + error);
-                            }
-                        });
-                AppSingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
-                System.out.println(cartItemHolder.itemCountHad+" to checkout");
-                Snackbar.make(v, cartItem.getName() +" has removed from the cart", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(context, "LOL", Toast.LENGTH_SHORT).show();
-                            }
-                        }).show();
-            }
-        });
-
-        return view;
     }
 
-    public void getProduct(String pid, final CartItemHolder cartItemHolder) {
-        RequestQueue requestQueue = AppSingleton.getInstance(context).getRequestQueue();
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                url+"product/"+pid,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                    Gson gson = new Gson();
-                    Product product = gson.fromJson(response.toString(), Product.class);
-                    Glide.with(context).load(product.getpImg()).apply(new RequestOptions().override(500,500)).centerCrop().into(cartItemHolder.prodPic);
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("Error while fetching product"+error);
-                    }
-                });
-        AppSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    @Override
+    public int getItemCount() {
+        return cartItems.size();
     }
 
 
