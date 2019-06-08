@@ -93,18 +93,18 @@ public class RegisterActivity extends AppCompatActivity {
                                 System.out.println("Error registering user"+error);
                             }
                         }){
-                    @Override
-                    protected Map<String, String> getParams(){
-                        Map<String, String> userMap = new HashMap<>();
-                        userMap.put("fName",Fname.getText().toString());
-                        userMap.put("lName",Lname.getText().toString());
-                        userMap.put("email",email.getText().toString());
-                        userMap.put("password",password.getText().toString());
-                        userMap.put("address",address.getText().toString());
-                        userMap.put("role", "jfnjk33");
+                            @Override
+                            protected Map<String, String> getParams(){
+                                Map<String, String> userMap = new HashMap<>();
+                                userMap.put("fName",Fname.getText().toString());
+                                userMap.put("lName",Lname.getText().toString());
+                                userMap.put("email",email.getText().toString());
+                                userMap.put("password",password.getText().toString());
+                                userMap.put("address",address.getText().toString());
+                                userMap.put("role", "jfnjk33");
 
-                        return userMap;
-                    }
+                                return userMap;
+                            }
 
 //                    @Override
 //                    public Map<String, String> getHeaders() throws AuthFailureError

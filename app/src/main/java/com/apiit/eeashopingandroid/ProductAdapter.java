@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private Product selectedProduct;
     String url = "http://10.0.3.2:8080/auth/cart/add";
     String producturl = "http://10.0.3.2:8080/product/";
-
+    Session session;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -69,6 +68,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             btn_add_to_cart = v.findViewById(R.id.btn_add_to_cart);
             btn_increase = v.findViewById(R.id.btn_increase_count);
             btn_decrease = v.findViewById(R.id.btn_decrease_count);
+
+            session = new Session(context);
+
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,10 +105,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             btn_add_to_cart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getProduct(Integer.parseInt(prod_id.getText().toString()));
 
-                    Snackbar.make(v, itemCount +" of "+prod_name.getText() + " added to the cart", Snackbar.LENGTH_LONG)
-                            .show();
+                    if(session.hasUserLoggedIn()){
+
+                        getProduct(prod_id.getText().toString());
+
+                        Snackbar.make(v, itemCount +" of "+prod_name.getText() + " added to the cart", Snackbar.LENGTH_LONG).show();
+                    }else{
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        v.getContext().startActivity(intent);
+                    }
+
                 }
             });
         }
@@ -151,7 +160,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return products.length;
     }
 
-    public void getProduct(int pid) {
+    public void getProduct(String pid) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -185,7 +194,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         CartItem cartitem = new CartItem();
         cartitem.setProduct(selectedProduct);
         cartitem.setAmount(1);
-        cartitem.setUid("4028da826a5508be016a550922060000"); // hardcoded to one user.....................................................
+        cartitem.setUserEmail(session.getUserEmail()); // hardcoded to one user.....................................................
 
         Gson gson = new Gson();
         String Jsoncart = gson.toJson(cartitem);
@@ -224,20 +233,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             protected Map<String, String> getParams()  {
                 Map<String, String> cartMap = new HashMap<>();
                 cartMap.put("product", selectedProduct.toString());
-                cartMap.put("userId", "4028da826a5508be016a550922060000");
-                cartMap.put("pprice", Double.toString(selectedProduct.getpPrice()));
+                cartMap.put("email", session.getUserEmail());
+                cartMap.put("amount", "1");
 
                 return cartMap;
             }
 
-
-
-//                        @Override
-//                        public Map<String, String> getHeaders() throws AuthFailureError {
-//                            final Map<String, String> headers = new HashMap<>();
-//                            headers.put("","");
-//                            return headers;
-//                        }
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    final Map<String, String> headers = new HashMap<>();
+                    String credentials = session.getUserEmail()+":"+session.getpassword();
+                    String auth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", auth);
+                    return headers;
+                }
         };
 
         AppSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);

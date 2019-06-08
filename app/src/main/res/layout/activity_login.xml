@@ -8,7 +8,7 @@
     tools:context=".LoginActivity">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/emai_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="323dp"
@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/password_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -38,8 +38,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:text="Email"
-        app:layout_constraintBottom_toTopOf="@+id/editText"
-        app:layout_constraintStart_toStartOf="@+id/editText" />
+        app:layout_constraintBottom_toTopOf="@+id/emai_login"
+        app:layout_constraintStart_toStartOf="@+id/emai_login" />
 
     <TextView
         android:id="@+id/textView10"
@@ -48,8 +48,8 @@
         android:layout_marginStart="7dp"
         android:layout_marginTop="8dp"
         android:text="Password"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintStart_toStartOf="@+id/emai_login"
+        app:layout_constraintTop_toBottomOf="@+id/emai_login" />
 
     <Button
         android:id="@+id/sign_in_btn"
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editText2" />
+        app:layout_constraintTop_toTopOf="@+id/password_login" />
 
     <TextView
         android:id="@+id/register_link"

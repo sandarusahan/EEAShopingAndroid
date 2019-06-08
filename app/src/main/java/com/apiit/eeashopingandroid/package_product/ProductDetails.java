@@ -1,6 +1,7 @@
 package com.apiit.eeashopingandroid.package_product;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.apiit.eeashopingandroid.AppSingleton;
+import com.apiit.eeashopingandroid.LoginActivity;
 import com.apiit.eeashopingandroid.R;
+import com.apiit.eeashopingandroid.Session;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
@@ -37,6 +40,8 @@ public class ProductDetails extends AppCompatActivity {
     ScrollView scrollView;
     String prodId;
     String url = "http://10.0.3.2:8080/product/";
+
+    Session session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,7 @@ public class ProductDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        session = new Session(ProductDetails.this);
 
         prodName = (TextView) findViewById(R.id.prodNameDetail);
         prodPrice = (TextView) findViewById(R.id.prodPriceDetail);
@@ -68,6 +74,21 @@ public class ProductDetails extends AppCompatActivity {
             }
         });
 
+        addToCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(session.hasUserLoggedIn()){
+
+                    getProduct(prodId);
+
+                }else{
+                    Intent intent = new Intent(ProductDetails.this, LoginActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+
+            }
+        });
 
 
     }

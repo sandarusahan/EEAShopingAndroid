@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,7 +35,10 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
+    private TextView user_email;
+    private TextView user_name;
 
+    Session session;
     String keyW = "all";
     String url = "http://10.0.3.2:8080/product/public/";
 
@@ -46,6 +50,18 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         context = getApplicationContext();
 
+        session = new Session(context);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View view = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        user_email = view.findViewById(R.id.user_email);
+        user_name = view.findViewById(R.id.user_name);
+
+        if(session.hasUserLoggedIn()){
+            user_name.setText(session.getUserEmail());
+        }else {
+            user_name.setText("Sign In");
+        }
         Intent intent = getIntent();
         int catId = intent.getIntExtra("cat_id", -1);
 
@@ -71,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(this);
 
 

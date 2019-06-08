@@ -37,7 +37,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder
     List<CartItem> cartItems;
     int resourceLayout;
     String url = "http://10.0.3.2:8080/";
-
+    CartItem cartItem;
 
     public CartAdapter(Context context, int resource, List<CartItem> cartItems) {
         this.context = context;
@@ -57,7 +57,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder
         Button removeItemBtn;
 
         int itemCountHad;
-        private CartItem cartItem;
+
 
         public CartItemHolder(@NonNull View itemView) {
             super(itemView);
@@ -112,7 +112,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder
     @Override
     public void onBindViewHolder(@NonNull CartItemHolder cartItemHolder, int i) {
 
-        CartItem cartItem = cartItems.get(i);
+        cartItem = cartItems.get(i);
         cartItemHolder.itemCountHad = cartItem.getAmount();
 
         cartItemHolder.prodName.setText(cartItem.getProduct().getpName()+" "+"("+cartItemHolder.itemCountHad+")");

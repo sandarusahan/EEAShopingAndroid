@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class CartItem implements Serializable {
     private String cid;
     private int amount;
-    private String uid;
+    private String userEmail;
     private Product product;
 
 
@@ -27,12 +27,12 @@ public class CartItem implements Serializable {
         this.amount = amount;
     }
 
-    public String getUid() {
-        return uid;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public Product getProduct() {

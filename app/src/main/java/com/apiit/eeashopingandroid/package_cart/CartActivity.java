@@ -28,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.apiit.eeashopingandroid.AppSingleton;
 import com.apiit.eeashopingandroid.R;
+import com.apiit.eeashopingandroid.Session;
 import com.apiit.eeashopingandroid.package_checkout.CheckoutActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +48,7 @@ public class CartActivity extends AppCompatActivity {
     private FloatingActionButton checkoutBtn;
     private TextView emptyText;
     List<CartItem> cartItems;
+    Session session;
 
 
     String url = "http://10.0.3.2:8080/auth/cart/";
@@ -60,6 +62,7 @@ public class CartActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        session = new Session(this);
         cartItemsList = findViewById(R.id.cart_list);
         checkoutBtn = findViewById(R.id.btn_checkout);
         emptyText = findViewById(R.id.empty_text);
@@ -69,7 +72,8 @@ public class CartActivity extends AppCompatActivity {
         cartItemsList.setLayoutManager(layout);
         getCartItems();
 
-        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+        checkoutBtn.setOnClickListener(
+                new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
@@ -125,7 +129,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     public void getCartItems() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "all", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url + "uid/"+session.getUserEmail(), null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -185,7 +189,7 @@ public class CartActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                String credentials = "sandaru.sahan@gmail.com:Sahan";
+                String credentials = session.getUserEmail() + ":" + session.getpassword();
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 headers.put("Content-Type", "application/json");
