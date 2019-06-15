@@ -160,6 +160,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
 
+            session.signOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_user) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);

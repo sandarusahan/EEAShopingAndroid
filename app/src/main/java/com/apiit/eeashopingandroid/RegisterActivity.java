@@ -85,6 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(JSONObject response) {
                                 System.out.println(response.toString());
+                                finish();
+
                             }
                         },
                         new Response.ErrorListener() {
@@ -116,7 +118,6 @@ public class RegisterActivity extends AppCompatActivity {
                 };
 
                 requestQueue.add(jsonObjectRequest);
-                finish();
             }
         });
     }

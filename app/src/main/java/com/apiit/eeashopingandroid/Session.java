@@ -30,6 +30,11 @@ public class Session {
         return password;
     }
 
+    public void signOut(){
+        prefs.edit().clear().apply();
+
+    }
+
     public boolean hasUserLoggedIn(){
         if(getUserEmail() == "no_user" || getUserEmail() == null){
             return false;

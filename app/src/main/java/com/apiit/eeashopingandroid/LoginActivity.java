@@ -41,8 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         signin_btn = findViewById(R.id.sign_in_btn);
 
         session = new Session(this);
-        session.setUserEmail("sandaru.sahan@gmail.com");
-        session.setPassword("Sahan");
+//        session.setUserEmail("sandaru.sahan@gmail.com");
+//        session.setPassword("Sahan");
         reg_link = findViewById(R.id.register_link);
 
         final String url = "http://10.0.3.2:8080/users/public/authenticate";
@@ -97,7 +97,9 @@ public class LoginActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    System.out.println("Error registering user"+error);
+                                    System.out.println("Auth failed");
+                                    Snackbar.make(v ,"Email/Password not valid", Snackbar.LENGTH_LONG)
+                                            .show();
                                 }
                             })
                     {
