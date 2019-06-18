@@ -197,5 +197,5 @@ public class CheckoutActivity extends AppCompatActivity {
 
         AppSingleton.getInstance(CheckoutActivity.this).addToRequestQueue(jsonArrayRequest);
     }
-
+//v
 }
