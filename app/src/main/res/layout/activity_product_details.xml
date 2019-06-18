@@ -92,15 +92,5 @@
             app:layout_constraintStart_toStartOf="@+id/prodImgDetail"
             app:layout_constraintTop_toBottomOf="@+id/addToCartBtnDetail" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/commentsDetail"
-            android:layout_width="0dp"
-            android:layout_height="313dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/prodDescriptionDetail"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/prodDescriptionDetail"
-            app:layout_constraintTop_toBottomOf="@+id/prodDescriptionDetail" />
-
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.apiit.eeashopingandroid.AppSingleton;
+import com.apiit.eeashopingandroid.Session;
 import com.apiit.eeashopingandroid.package_product.Product;
 import com.apiit.eeashopingandroid.R;
 import com.bumptech.glide.Glide;
@@ -29,15 +32,20 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder> {
 
     Context context;
     List<CartItem> cartItems;
     int resourceLayout;
-    String url = "http://10.0.3.2:8080/";
+    String url = "http://10.0.3.2:8080/auth/";
     CartItem cartItem;
+
+    Session session;
+
 
     public CartAdapter(Context context, int resource, List<CartItem> cartItems) {
         this.context = context;
@@ -96,6 +104,38 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder
                 }
             });
 
+            removeItemBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.DELETE, url + "cart/"+ cartItems.get(getAdapterPosition()).getCid(), null,
+                                        new Response.Listener<JSONArray>() {
+                                            @Override
+                                            public void onResponse(JSONArray response) {
+
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                System.out.println("Error while fetching cart items" + error);
+                                            }
+                                        }){
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> headers = new HashMap<>();
+                            String credentials = session.getUserEmail() + ":" + session.getpassword();
+                            String auth = "Basic "
+                                    + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                            headers.put("Content-Type", "application/json");
+                            headers.put("Authorization", auth);
+                            return headers;
+                        }
+                    };
+                                AppSingleton.getInstance(context).addToRequestQueue(jsonArrayRequest);
+
+                }
+            });
 
         }
     }
@@ -106,6 +146,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartItemHolder
     public CartItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(resourceLayout, viewGroup, false);
         CartAdapter.CartItemHolder viewHolder = new CartItemHolder(view);
+        session = new Session(context);
         return viewHolder;
     }
 

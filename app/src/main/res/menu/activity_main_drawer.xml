@@ -13,6 +13,9 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Categories" />
         <item
+            android:id="@+id/pur_history"
+            android:title="Purchase History" />
+        <item
             android:id="@+id/nav_promo"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Promotion" />

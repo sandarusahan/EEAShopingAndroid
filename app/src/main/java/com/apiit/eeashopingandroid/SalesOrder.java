@@ -6,7 +6,7 @@ import java.util.List;
 public class SalesOrder {
     private int orderId;
 
-    private int userId;
+    private String userEmail;
 
     private Timestamp orderDate;
     private String address;
@@ -22,12 +22,12 @@ public class SalesOrder {
         this.orderId = orderId;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public Timestamp getOrderDate() {

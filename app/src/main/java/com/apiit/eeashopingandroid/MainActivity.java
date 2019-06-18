@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity
             user_name.setText(session.getUserEmail());
         }else {
             user_name.setText("Sign In");
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
         Intent intent = getIntent();
         int catId = intent.getIntExtra("cat_id", -1);
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.refresh) {
-            getProducts(keyW);
+            getProducts("all");
             return true;
         }
 
@@ -158,7 +160,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_promo) {
 
-        } else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.pur_history) {
+            Intent intent = new Intent(this, PurchaseHistoryActivity.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_logout) {
 
             session.signOut();
             Intent intent = new Intent(this, LoginActivity.class);

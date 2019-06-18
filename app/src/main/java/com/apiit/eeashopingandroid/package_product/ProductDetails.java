@@ -35,7 +35,6 @@ public class ProductDetails extends AppCompatActivity {
     TextView prodDesc;
     ImageView prodImg;
     Button addToCartBtn;
-    RecyclerView comments;
     Toolbar toolbar;
     ScrollView scrollView;
     String prodId;
@@ -58,7 +57,6 @@ public class ProductDetails extends AppCompatActivity {
         prodDesc = (TextView) findViewById(R.id.prodDescriptionDetail);
         prodImg = (ImageView) findViewById(R.id.prodImgDetail);
         addToCartBtn = (Button) findViewById(R.id.addToCartBtnDetail);
-        comments = (RecyclerView) findViewById(R.id.commentsDetail);
         scrollView = (ScrollView) findViewById(R.id.scrollView2);
 
         prodId = getIntent().getStringExtra("product");

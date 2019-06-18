@@ -41,8 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         signin_btn = findViewById(R.id.sign_in_btn);
 
         session = new Session(this);
-//        session.setUserEmail("sandaru.sahan@gmail.com");
-//        session.setPassword("Sahan");
+        session.setUserEmail(email.getText().toString());
+        session.setPassword(password.getText().toString());
         reg_link = findViewById(R.id.register_link);
 
         final String url = "http://10.0.3.2:8080/users/public/authenticate";
@@ -52,8 +52,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(final View v) {
 
                 final Auth auth = new Auth();
-//                auth.setEmail("sandaru.sahan@gmail.com");
-//                auth.setPassword("Sahan");
+                auth.setEmail(email.getText().toString());
+                auth.setPassword(password.getText().toString());
 
                 Gson gson = new Gson();
                 String authJson = gson.toJson(auth);
